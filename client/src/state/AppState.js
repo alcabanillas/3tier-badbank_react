@@ -11,24 +11,7 @@ const actions = {
 };
 
 const initialState = {
-  users:[
-    {
-      name:'abel',
-      email:'abel@mit.edu',
-      password:'secret',
-      balance:100
-    },
-    {
-      name:'alvaro',
-      email:'alvaro@gmail.com',
-      password:'secret',
-      balance:100
-    }
-  ],
-  currentUser: null,
-  success: false,
-  showError: false,
-  errorMessage: ""
+  currentUser: null
 }
 
 function reducer(state, action) {
@@ -67,13 +50,7 @@ const useActions = (state, dispatch) => {
   }
 
   const login = (credentials) => {
-    let currentUser = state.users.find( elem => elem.email === credentials.email && elem.password === credentials.password)
-
-    if (!currentUser) {
-      return { result : false, errorMessage: 'Invalid credentials'};
-    }
-
-    dispatch({ type: actions.LOGIN, payload: credentials.email })
+    dispatch({ type: actions.LOGIN, payload: credentials })
     return { result : true};
   }
 

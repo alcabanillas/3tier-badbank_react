@@ -4,6 +4,7 @@ import { useToastContext} from "../state/CustomToast";
 import  BankForm  from "../components/bankform";
 import { BankCard } from "../components/bankcard";
 import * as yup from "yup";
+import { doLogin } from "../services/authService"
 
 export function Login() {
   const { usersState, actions } = useContext(UsersContext);
@@ -25,14 +26,12 @@ export function Login() {
   });
 
   function handleLogin(data) {
-    const {result, errorMessage} = actions.login({ email: data.Email, password: data.Password });
-
-    if (result) {
-      addToast({text: 'User logged in', type: 'success'});
-    }
-    else {
-      addToast({text: errorMessage, type: 'error'})
-    }
+    doLogin({ email: data.Email, password : data.Password })
+      .then( msg => { 
+        addToast({text: `User ${msg.user.email} logged in`, type: 'success'})
+        actions.login( msg.user)
+      })
+      .catch( errorMessage =>{ addToast({text: 'Error: ' + errorMessage, type: 'error'}) })
   }
 
   const renderLoginForm = () => {
@@ -51,7 +50,7 @@ export function Login() {
     return (
       <div className="card-container logout">
         <h5>User logged in</h5>
-        <div>Welcome {usersState.currentUser}</div>
+        <div>Welcome {usersState.currentUser.email}</div>
       </div>
     );
   };

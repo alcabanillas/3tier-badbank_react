@@ -1,30 +1,36 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UsersContext } from "../state/AppState";
 import { useToastContext } from "../state/CustomToast";
 import { BankCard } from "../components/bankcard";
 import BankForm from "../components/bankform";
 import * as yup from "yup";
+import apiService from "../services/usersService";
 
 export const WithDraw = () => {
-  const { usersState, actions } = useContext(UsersContext);
+  const { usersState } = useContext(UsersContext);
   const [show, setShow] = useState(true);
   const addToast = useToastContext();
 
-  const user = usersState.users.find(
-    (elem) => elem.email === usersState.currentUser
-  );
+  const [balance, setBalance] = useState(0)
+
+  useEffect( () =>{
+    // fetch current balance
+    apiService
+      .getBalance({email: usersState.currentUser.email})
+        .then( res => setBalance(Number(res.balance)))
+        .catch( err => addToast({ text : `Error getting balance: ${err}`, type: "error"}))
+  }, [])
 
   const handleSubmit = (data) => {
-    const { result, errorMessage } = actions.withDraw(Number(data.Amount));
-
-    if (result) {
-      setShow(false);
-      addToast({ text: "Withdraw successfully done", type: "success" });
-    } else {
-      addToast({ text: errorMessage, type: "error" });
-    }
-
-    return { result, errorMessage: "" };
+    apiService.withDraw({ email: usersState.currentUser.email, amount : Number(data.Amount)})
+      .then( (result) => {
+        setBalance(Number(result.amount))
+        setShow(false);
+        addToast({ text: "Withdraw successfully done", type: "success" });
+      })
+      .catch( (errorMessage) =>
+        addToast({ text: errorMessage, type: "error" })
+      )
   };
 
   let formFields = [
@@ -84,7 +90,7 @@ export const WithDraw = () => {
           usersState.currentUser ? (
             <div>
               <h3 className="col text-center mb-3" id="total">
-                Balance ${user.balance}
+                Balance ${balance}
               </h3>
               {show ? renderWithDrawForm() : renderNewOperation()}
             </div>

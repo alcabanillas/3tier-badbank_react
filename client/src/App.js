@@ -32,6 +32,7 @@ function App() {
             </Routes>
         </div>
         </ToastContextProvider>
+        <Footer></Footer>
       </Router>
     </ContextProvider>
   );

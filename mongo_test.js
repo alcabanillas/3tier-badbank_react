@@ -1,15 +1,17 @@
-const MongoClient = require('mongodb').MongoClient
+const {MongoClient, ServerApiVersion} = require('mongodb')
 const url = 'mongodb://localhost:27017'
 
-const client = new MongoClient(url, {useUnifiedTopology : true})
+//const client = new MongoClient(url, {useUnifiedTopology : true})
 
+const uri = "mongodb+srv://admin:CBybrW2Tz31xB1LX@cluster0.n9mnpx0.mongodb.net/local_library?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 async function main(){
   await client.connect()
   console.log('Connected successfully to server');
 
   // Database Name
-  const dbName = 'myproject';
+  const dbName = 'badbank';
 
   const db = client.db(dbName);
 

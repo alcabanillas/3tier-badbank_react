@@ -1,38 +1,36 @@
-import { useContext, useState } from "react";
-import { UsersContext } from "../state/AppState";
+import { useState } from "react";
 import { useToastContext } from "../state/CustomToast";
 import BankForm from "../components/bankform";
 import { BankCard } from "../components/bankcard";
-
 import * as yup from "yup";
+import apiService from "../services/usersService"
 
 export function CreateAccount() {
-  const { actions } = useContext(UsersContext);
   const [show, setShow] = useState(true);
   const addToast = useToastContext();
 
   const handleCreate = (data) => {
     let result;
 
-    actions.addUser({
+    apiService.addUser({
       name: data.Name,
       email: data.Email,
       password: data.Password,
       balance: 0,
     })
-      .then( (res) => {
-        console.log('actions.addUser', res)
+      .then((res) => {
         result = true;
         setShow(false);
         addToast({ text: "Account successfully created", type: "success" });
         return { result };
       })
-      .catch( 
-        (error) => {
-          error.then( msg => addToast({ text: `Error creating user: ${msg}`, type: "error" }));
-          result = false;
-          return { result };
-      })
+      .catch((error) => {
+        error.then((msg) =>
+          addToast({ text: `Error creating user: ${msg}`, type: "error" })
+        );
+        result = false;
+        return { result };
+      });
   };
 
   let formFields = [
@@ -78,7 +76,11 @@ export function CreateAccount() {
         <h5>Success</h5>
         <div className="mb-3">User account created successfully</div>
         <div className="text-center">
-          <button type="submit" className="btn btn-primary" onClick={() => clearForm()} >
+          <button
+            type="submit"
+            className="btn btn-primary"
+            onClick={() => clearForm()}
+          >
             Add another account
           </button>
         </div>
