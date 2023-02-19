@@ -3,13 +3,13 @@ const { initializeApp } = require('firebase/app')
 //const firebaseConfig = require("./MIT-Auth-Routes.json");
 
 const firebaseConfig = {
-  "apiKey": "AIzaSyD6Q4GR2i-LZmeBhLgkp7tjt99yu54WIQQ",
-  "authDomain": "badbank-d105e.firebaseapp.com",
-  "projectId": "badbank-d105e",
-  "storageBucket": "badbank-d105e.appspot.com",
-  "messagingSenderId": "953333433177",
-  "appId": "1:953333433177:web:de4ae1b9202129cfc60248"  
-}
+  apiKey: "AIzaSyCIdgP5UepZYNJfegdUxhEaZl_lCNz3m8U",
+  authDomain: "badbank-87112.firebaseapp.com",
+  projectId: "badbank-87112",
+  storageBucket: "badbank-87112.appspot.com",
+  messagingSenderId: "641621008693",
+  appId: "1:641621008693:web:b54539d980a6319156ec7c"
+};
 
 const loginApp = initializeApp(firebaseConfig);
 
