@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 //intialize App
 const firebaseConfig = {
@@ -34,13 +34,14 @@ function doLogin(userInfo) {
 
 const doGoogleLogin = () => {
   return new Promise((resolve, reject) => {
-    const auth = getAuth(loginApp);
-    const provider = new auth.GoogleAuthProvider();
-    provider.addScope("email");
-    auth()
-      .signInWithPopup(provider)
-      .then((result) => resolve(result.user.email))
-      .catch((err) => reject(err));
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {debugger
+        resolve(result)})
+      .catch((err) => {
+        debugger
+        reject(err)});
   });
 };
 

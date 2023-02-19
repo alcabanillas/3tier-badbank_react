@@ -25,13 +25,17 @@ export function Login() {
     Password: yup.string().required()
   });
 
-  function handleGoogleLogin(data) {
+  function handleGoogleLogin() {
     doGoogleLogin()
       .then( msg => {
+        debugger
         addToast({text: `User ${msg.user.email} logged in`, type: 'success'})
         actions.login( msg.user)
       })
-      .catch( errorMessage =>{ addToast({text: 'Error: ' + errorMessage, type: 'error'}) })
+      .catch( errorMessage =>{ 
+        debugger
+        addToast({text: 'Error: ' + errorMessage, type: 'error'}) 
+      })
   }
 
   function handleLogin(data) {
@@ -44,7 +48,7 @@ export function Login() {
   }
 
   const additionalButtonObj = { 
-    text: "Log in with google", 
+    text: <span class="bi bi-google"> Log in with google</span>,
     handler: () => handleGoogleLogin()  
   }
 
