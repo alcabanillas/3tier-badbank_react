@@ -4,7 +4,7 @@ import { useToastContext} from "../state/CustomToast";
 import  BankForm  from "../components/bankform";
 import { BankCard } from "../components/bankcard";
 import * as yup from "yup";
-import { doLogin } from "../services/authService"
+import { doLogin, doGoogleLogin } from "../services/authService"
 
 export function Login() {
   const { usersState, actions } = useContext(UsersContext);
@@ -25,6 +25,15 @@ export function Login() {
     Password: yup.string().required()
   });
 
+  function handleGoogleLogin(data) {
+    doGoogleLogin()
+      .then( msg => {
+        addToast({text: `User ${msg.user.email} logged in`, type: 'success'})
+        actions.login( msg.user)
+      })
+      .catch( errorMessage =>{ addToast({text: 'Error: ' + errorMessage, type: 'error'}) })
+  }
+
   function handleLogin(data) {
     doLogin({ email: data.Email, password : data.Password })
       .then( msg => { 
@@ -34,11 +43,17 @@ export function Login() {
       .catch( errorMessage =>{ addToast({text: 'Error: ' + errorMessage, type: 'error'}) })
   }
 
+  const additionalButtonObj = { 
+    text: "Log in with google", 
+    handler: () => handleGoogleLogin()  
+  }
+
   const renderLoginForm = () => {
     return (
       <BankForm
-        buttonSubmit="Login"
+        buttonSubmit={"Login"}
         handle={handleLogin}
+        additionalButton = { additionalButtonObj }
         fields={formFields}
         initialData={initialValues}
         schema={schema}
@@ -58,7 +73,7 @@ export function Login() {
   return (
     <div className="card-container login">
       <BankCard
-        width="20rem"
+        width="30rem"
         txtcolor="black"
         header="Login"
         body={!usersState.currentUser ? 

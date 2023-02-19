@@ -1,10 +1,10 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Formik } from "formik";
-import { InputGroup } from "react-bootstrap";
+import { InputGroup, Col } from "react-bootstrap";
 import {useState} from "react"
 
-function BankForm({ buttonSubmit, handle, fields, initialData, schema }) {
+function BankForm({ buttonSubmit, handle, fields, initialData, schema, additionalButton }) {
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePasswordVisiblity = () => {
     setPasswordShown(passwordShown ? false : true);
@@ -44,15 +44,21 @@ function BankForm({ buttonSubmit, handle, fields, initialData, schema }) {
               </Form.Group>
             );
           })}
-          <div className="text-center">
+          <div className="d-flex text-center justify-content-evenly">
             <Button
               disabled={!(isValid && dirty)}
               type="submit"
-              className="btn btn-primary"
-              data-testid={`btn${buttonSubmit.replace(" ", "")}`}
+              className="btn btn-primary mr-1"
             >
               {buttonSubmit}
             </Button>
+            { additionalButton ? (
+              <Button 
+                onClick={additionalButton.handler}>
+                  {additionalButton.text}
+                </Button>) : (<></>)
+            }
+            <></>
           </div>
         </Form>
       )}
