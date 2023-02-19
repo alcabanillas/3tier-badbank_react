@@ -26,20 +26,12 @@ app.get("/account/create/:name/:email/:password", function (req, res) {
   authService
     .createUser( { name: req.params.name, email: req.params.email, password: req.params.password })
     .then( (info) => {
-      console.log(info)
-      dal
-        .create(req.params.email)
-          .then( user => res.send(user))
-          .catch( (err) => {
-            console.log('error1:', err)
-            res.status(500).send(err)
-          })}
+      dal.create(req.params.email)
+        .then( user => res.send(user))
+        .catch( (err) => res.status(500).send(err))
+      }
     )
-    .catch((err) => {
-      console.log('error2:', err)
-      res.status(500).send(err)
-      return
-    });
+    .catch((err) => res.status(500).send(err));
 });
 
 //get all data
