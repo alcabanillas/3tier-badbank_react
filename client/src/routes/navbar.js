@@ -1,12 +1,14 @@
 import { useContext } from "react";
-import { UsersContext } from "../state/AppState";
+import { AuthContext } from "../state/AppState";
 import { Navigate, NavLink } from "react-router-dom";
 import { CustomTooltip } from "../components/customtooltip";
+import { doLogout } from "../services/authService";
+
 
 export function NavBar() {
-  const { usersState, actions } = useContext(UsersContext);
+  const currentUser = useContext(AuthContext);
 
-  const isUserLoggedIn = usersState.currentUser ? "" : "disabled";
+  const isUserLoggedIn = currentUser ? "" : "disabled";
 
   return (
     <nav className="navbar sticky-top navbar-expand-lg navbar-dark bg-primary" >
@@ -61,7 +63,7 @@ export function NavBar() {
               </CustomTooltip>
             </li>
             <li className="nav-item">
-            {!usersState.currentUser ? (
+            {currentUser === null ? (
                 <CustomTooltip text="Log in" tooltipId="login">
                   <NavLink className="nav-link" to="/login">
                     Login
@@ -69,7 +71,7 @@ export function NavBar() {
                 </CustomTooltip>
             ) : ( 
               <CustomTooltip text="Log out" tooltipId="logout">
-              <NavLink className="nav-link" to="/login" end onClick={(e) => {actions.logout(); Navigate({to:'/'})}}>
+              <NavLink className="nav-link" to="/" end onClick={(e) => { doLogout()}}>
                 Logout
               </NavLink>
               </CustomTooltip>

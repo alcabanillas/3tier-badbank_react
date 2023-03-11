@@ -1,5 +1,7 @@
 const { MongoClient } = require("mongodb");
-const url = "mongodb://localhost:27017";
+
+const url = process.env.MONGO_URL;
+
 
 const client = new MongoClient(url, { useUnifiedTopology: true });
 
@@ -18,7 +20,7 @@ const dbName = "badbank";
 let db = client.db(dbName);
 
 // create user account
-function create(email) {
+function create(email, name) {
   return new Promise((resolve, reject) => {
     const collection = db.collection("users");
 
@@ -29,7 +31,7 @@ function create(email) {
           reject("User already exists");
           return;
         }
-        const doc = { email, balance: 0 };
+        const doc = { email, name, balance: 0 };
         collection
           .insertOne(doc, { w: 1 })
           .then(resolve(doc))
@@ -40,6 +42,7 @@ function create(email) {
 }
 
 function getBalance(user) {
+  console.log(user)
   return new Promise((resolve, reject) => {
     db.collection("users")
       .findOne({ email: user })
@@ -76,13 +79,14 @@ function isConnected() {
   });
 }
 
-function deposit() {
+function deposit(user, amount) {
   return new Promise((resolve, reject) => {
     db.collection("users")
       .findOne({ email: user })
       .then((res) => {
         if (res != null) {
-          resolve(res.balance);
+          console.log(res)
+          resolve(amount);
           return;
         } else {
           reject("User not found");
@@ -91,13 +95,13 @@ function deposit() {
   });
 }
 
-function withDraw() {
+function withDraw(user, amount) {
   return new Promise((resolve, reject) => {
     db.collection("users")
       .findOne({ email: user })
       .then((res) => {
         if (res != null) {
-          resolve(res.balance);
+          resolve(amount);
           return;
         } else {
           reject("User not found");

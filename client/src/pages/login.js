@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UsersContext } from "../state/AppState";
+import { AuthContext } from "../state/AppState";
 import { useToastContext} from "../state/CustomToast";
 import  BankForm  from "../components/bankform";
 import { BankCard } from "../components/bankcard";
@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { doLogin, doGoogleLogin } from "../services/authService"
 
 export function Login() {
-  const { usersState, actions } = useContext(UsersContext);
+  const currentUser = useContext(AuthContext);
   const addToast = useToastContext();
 
   let formFields = [
@@ -28,12 +28,9 @@ export function Login() {
   function handleGoogleLogin() {
     doGoogleLogin()
       .then( msg => {
-        debugger
         addToast({text: `User ${msg.user.email} logged in`, type: 'success'})
-        actions.login( msg.user)
       })
       .catch( errorMessage =>{ 
-        debugger
         addToast({text: 'Error: ' + errorMessage, type: 'error'}) 
       })
   }
@@ -42,13 +39,12 @@ export function Login() {
     doLogin({ email: data.Email, password : data.Password })
       .then( msg => { 
         addToast({text: `User ${msg.user.email} logged in`, type: 'success'})
-        actions.login( msg.user)
       })
       .catch( errorMessage =>{ addToast({text: 'Error: ' + errorMessage, type: 'error'}) })
   }
 
   const additionalButtonObj = { 
-    text: <span class="bi bi-google"> Log in with google</span>,
+    text: <span className="bi bi-google"> Log in with google</span>,
     handler: () => handleGoogleLogin()  
   }
 
@@ -69,7 +65,7 @@ export function Login() {
     return (
       <div className="card-container logout">
         <h5>User logged in</h5>
-        <div>Welcome {usersState.currentUser.email}</div>
+        <div>Welcome {currentUser.email}</div>
       </div>
     );
   };
@@ -80,7 +76,7 @@ export function Login() {
         width="30rem"
         txtcolor="black"
         header="Login"
-        body={!usersState.currentUser ? 
+        body={!currentUser ? 
             renderLoginForm() : 
             renderLogoutForm()
         }/>

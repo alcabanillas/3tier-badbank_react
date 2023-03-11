@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { UsersContext } from "../state/AppState";
+import { AuthContext } from "../state/AppState";
 import { useToastContext } from "../state/CustomToast";
 import { BankCard } from "../components/bankcard";
 import BankForm from "../components/bankform";
@@ -7,24 +7,25 @@ import * as yup from "yup";
 import apiService from "../services/usersService";
 
 export const WithDraw = () => {
-  const { usersState } = useContext(UsersContext);
+  const currentUser = useContext(AuthContext);
   const [show, setShow] = useState(true);
   const addToast = useToastContext();
 
   const [balance, setBalance] = useState(0)
 
   useEffect( () =>{
-    // fetch current balance
-    apiService
-      .getBalance({email: usersState.currentUser.email})
-        .then( res => setBalance(Number(res.balance)))
-        .catch( err => addToast({ text : `Error getting balance: ${err}`, type: "error"}))
-  }, [])
+    if (currentUser == null) return
+    
+    apiService.getUserBalance(currentUser)
+      .then( res => setBalance(Number(res.balance)))
+      .catch( err => addToast({ text : `Error getting balance: ${err}`, type: "error"}))
+  }, [currentUser])
 
   const handleSubmit = (data) => {
-    apiService.withDraw({ email: usersState.currentUser.email, amount : Number(data.Amount)})
+    debugger
+    apiService.withDraw({ email: currentUser.email, amount : Number(data.Amount)})
       .then( (result) => {
-        setBalance(Number(result.amount))
+        setBalance(Number(result.balance))
         setShow(false);
         addToast({ text: "Withdraw successfully done", type: "success" });
       })
@@ -87,7 +88,7 @@ export const WithDraw = () => {
         txtcolor="black"
         header="WithDraw"
         body={
-          usersState.currentUser ? (
+          currentUser ? (
             <div>
               <h3 className="col text-center mb-3" id="total">
                 Balance ${balance}

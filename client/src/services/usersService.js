@@ -1,8 +1,25 @@
+const API_URL = process.env.REACT_APP_API_URL
+
 const addUser = (userInfo) => {
+  debugger
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    "name": userInfo.name,
+    "email": userInfo.email,
+    "password": userInfo.password
+  });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
   return new Promise((resolve, reject) =>
-    fetch(
-      `/account/create/${userInfo.name}/${userInfo.email}/${userInfo.password}`
-    )
+    fetch(`${API_URL}/users/`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           reject(response.text());
@@ -18,7 +35,7 @@ const addUser = (userInfo) => {
 
 const getAllData = () => {
   return new Promise((resolve, reject) => {
-    fetch('/account/all')
+    fetch(`${API_URL}/account/all`)
       .then((response) => {
         if (!response.ok) {
           response.text().then(msg => reject(msg));
@@ -36,7 +53,7 @@ const deposit = (userInfo) => {
   let options = { method: 'POST'}
 
   return new Promise((resolve, reject) =>
-    fetch(`/account/deposit/${userInfo.email}/${userInfo.amount}`, options)
+    fetch(`${API_URL}/account/deposit/${userInfo.email}/${userInfo.amount}`, options)
       .then((response) => {
         if (!response.ok) {
           response.text().then((msg) => reject(msg));
@@ -52,7 +69,7 @@ const deposit = (userInfo) => {
 const withDraw = (userInfo) => {
   let options = { method: 'POST'}
   return new Promise((resolve, reject) =>
-    fetch(`/account/withdraw/${userInfo.email}/${userInfo.amount}`, options)
+    fetch(`${API_URL}/account/withdraw/${userInfo.email}/${userInfo.amount}`, options)
       .then((response) => {
         if (!response.ok) {
           response.text().then((msg) => reject(msg));
@@ -65,9 +82,18 @@ const withDraw = (userInfo) => {
 }
 
 // get user balance
-const getBalance = ( userInfo) => {
+const getUserBalance = async ( userInfo) => {
+  const idToken = await userInfo.getIdToken()
+  var options = {
+    method: 'GET',
+    headers: {
+      'Authorization' : idToken
+    }
+  }
+  debugger
+
   return new Promise((resolve, reject) => 
-    fetch(`/account/balance/${userInfo.email}`)
+    fetch(`${API_URL}/users/${userInfo.email}/balance/`, options)
     .then((response) => {
       if (!response.ok) {
         response.text().then((msg) => reject(msg));
@@ -79,4 +105,4 @@ const getBalance = ( userInfo) => {
   )
 }
 
-export default { getAllData, addUser, deposit, withDraw, getBalance };
+module.exports = { getAllData, addUser, deposit, withDraw, getUserBalance };

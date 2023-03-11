@@ -12,12 +12,12 @@ import { Footer } from "./routes/footer";
 
 import "bootswatch/dist/flatly/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap";
-import { ContextProvider } from "./state/AppState";
+import { AuthContextProvider } from "./state/AppState";
 import { ToastContextProvider } from "./state/CustomToast";
 
 function App() {
   return (
-    <ContextProvider>
+    <AuthContextProvider>
       <Router>
         <NavBar />
         <ToastContextProvider>
@@ -34,7 +34,7 @@ function App() {
         </ToastContextProvider>
         <Footer></Footer>
       </Router>
-    </ContextProvider>
+    </AuthContextProvider>
   );
 }
 

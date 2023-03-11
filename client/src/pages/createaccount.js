@@ -5,6 +5,7 @@ import { BankCard } from "../components/bankcard";
 import * as yup from "yup";
 import apiService from "../services/usersService"
 
+
 export function CreateAccount() {
   const [show, setShow] = useState(true);
   const addToast = useToastContext();
@@ -15,8 +16,7 @@ export function CreateAccount() {
     apiService.addUser({
       name: data.Name,
       email: data.Email,
-      password: data.Password,
-      balance: 0,
+      password: data.Password
     })
       .then((res) => {
         result = true;
@@ -53,6 +53,16 @@ export function CreateAccount() {
       .min(8, "Password must have at least 8 chars")
       .required(),
   });
+
+ /*const schema = yup.object().shape({
+  Name: yup.string().required(),
+  Email: yup.string().email("User must be a valid email").required(),
+  Password: yup.string().when('Email', {
+    is : ( val ) => val ? val.includes('gmail.com') : false,
+    then: (schema) => schema.notRequired(),
+    otherwise: ( schema) => schema.min(8, "Password must have at least 8 chars").required(),
+  })
+});*/
 
   const clearForm = () => {
     setShow(true);
