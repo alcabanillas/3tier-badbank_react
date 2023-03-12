@@ -22,8 +22,12 @@ export const WithDraw = () => {
   }, [currentUser])
 
   const handleSubmit = (data) => {
-    debugger
-    apiService.withDraw({ email: currentUser.email, amount : Number(data.Amount)})
+    if (Number(data.Amount) > balance) {
+      let errorMessage = 'Insufficient funds'
+      addToast({text: errorMessage, type: "error"})
+      return
+    }
+    apiService.doNewTransaction({ user: currentUser, amount : Number(-data.Amount)})
       .then( (result) => {
         setBalance(Number(result.balance))
         setShow(false);

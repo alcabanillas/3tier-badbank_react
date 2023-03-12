@@ -57,7 +57,7 @@ export function NavBar() {
 
             <li className="nav-item">
               <CustomTooltip text="All data" tooltipId="allData">
-                <NavLink className="nav-link" to="/allData">
+                <NavLink className={`nav-link ${isUserLoggedIn}`} to="/allData">
                   AllData
                 </NavLink>
               </CustomTooltip>

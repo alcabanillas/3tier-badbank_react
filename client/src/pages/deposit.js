@@ -24,7 +24,7 @@ export const Deposit = () => {
   }, [currentUser])
 
   const handleSubmit = (data) => {
-    apiService.deposit({ email: currentUser.email, amount : Number(data.Amount)})
+    apiService.doNewTransaction({ user: currentUser, amount : Number(data.Amount)})
       .then( (result) => {
         debugger
         setBalance(Number(result.balance))
