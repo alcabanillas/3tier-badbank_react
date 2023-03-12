@@ -12,6 +12,7 @@ app.use(cors(
 app.use(express.json())
 
 var dal = require("./services/dal");
+
 app.use("/", function (req, res, next) {
   // disable all requests if not connected to DB
   dal
