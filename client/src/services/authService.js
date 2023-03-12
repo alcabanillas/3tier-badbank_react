@@ -31,7 +31,7 @@ function doLogin(userInfo) {
         resolve(res);
       })
       .catch((err) => {
-        reject(err);
+        reject('Invalid username/password');
       });
   });
 }
