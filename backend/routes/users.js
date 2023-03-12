@@ -46,10 +46,11 @@ var dal = require("../services/dal");
  *          description: Created!
  */
 router.post("/", function (req, res) {
+  // Comprobar si el proveedor es google o email. En caso de que sea google, dar de alta en BBDD directamente.
   authService
     .createUser( { password: req.body.password, email: req.body.email, name: req.body.name })
     .then( (info) => {
-      dal.create(info.email, info.displayName)
+      dal.createUser(info.email, info.displayName)
         .then( user => res.status(201).send(user))
         .catch( (err) => res.status(500).send(err))
       }
