@@ -23,7 +23,7 @@ app.use(cors(
 
 app.use(express.json())
 
-var dal = require("./services/dal");
+var dal = require("./backend/services/dal");
 app.use("/", function (req, res, next) {
   // disable all requests if not connected to DB
   dal
@@ -32,10 +32,10 @@ app.use("/", function (req, res, next) {
     .catch((err) => res.status(500).send(err));
 });
 
-var usersRouter = require('./routes/users');
+var usersRouter = require('./backend/routes/users');
 app.use("/users", usersRouter)
 
-var transactionsRouter = require('./routes/transactions')
+var transactionsRouter = require('./backend/routes/transactions')
 app.use("/transactions", transactionsRouter)
 
 
