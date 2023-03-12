@@ -19,7 +19,7 @@ const dbName = "badbank";
 let db = client.db(dbName);
 
 // create user account
-function create(email, name) {
+function createUser(email, name) {
   return new Promise((resolve, reject) => {
     const collection = db.collection("users");
 
@@ -41,7 +41,6 @@ function create(email, name) {
 }
 
 function getBalance(user) {
-  console.log(user)
   return new Promise((resolve, reject) => {
     db.collection("users")
       .findOne({ email: user })
@@ -56,18 +55,15 @@ function getBalance(user) {
   });
 }
 
-function all() {
-  return new Promise((resolve, reject) => {
-    db.collection("users")
-      .find({})
-      .toArray()
-      .then((data) => {
-        resolve(data);
-      })
-      .catch((err) => {
-        reject(err);
-      });
-  });
+async function getTransactionsByUser(user) {
+  try {
+    console.log(user.email)
+    let data = await db.collection("transactions").find({ account: user.email }).toArray()
+    return data; 
+  }
+  catch( err) {
+    throw err;
+  }
 }
 
 function isConnected() {
@@ -78,35 +74,28 @@ function isConnected() {
   });
 }
 
-function deposit(user, amount) {
-  return new Promise((resolve, reject) => {
-    db.collection("users")
-      .findOne({ email: user })
-      .then((res) => {
-        if (res != null) {
-          console.log(res)
-          resolve(amount);
-          return;
-        } else {
-          reject("User not found");
-        }
-      });
-  });
+async function getUserAccount(account){
+  try {
+    let user = await db.collection("users").findOne({email: account})
+    return user;
+  } catch( err ){
+    return null
+  }
 }
 
-function withDraw(user, amount) {
-  return new Promise((resolve, reject) => {
-    db.collection("users")
-      .findOne({ email: user })
-      .then((res) => {
-        if (res != null) {
-          resolve(amount);
-          return;
-        } else {
-          reject("User not found");
-        }
-      });
-  });
+async function doNewTransaction(user, amount) {
+  try {
+    const doc = { account : user.email, date: Date.now(), amount };
+    
+    await db.collection("transactions").insertOne(doc, { w : 1})
+    user.balance += amount;
+    console.log(user)
+    await db.collection("users").updateOne({email : user.email}, { $set: { balance: user.balance } } )
+    return user.balance;
+  } catch (err) {
+    throw err;
+  }
+  
 }
 
-module.exports = { create, all, isConnected, getBalance, deposit, withDraw };
+module.exports = { createUser, isConnected, getBalance, getTransactionsByUser, doNewTransaction, getUserAccount };

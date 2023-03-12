@@ -10,7 +10,8 @@ router.post("/", function (req, res) {
   authService
     .createUser( { password: req.body.password, email: req.body.email, name: req.body.name })
     .then( (info) => {
-      dal.create(req.body.email, req.body.name)
+      console.log(info.email, info.displayName)
+      dal.create(info.email, info.displayName)
         .then( user => res.send(user))
         .catch( (err) => res.status(500).send(err))
       }
