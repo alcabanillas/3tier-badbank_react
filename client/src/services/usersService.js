@@ -56,8 +56,6 @@ const getTransactionsByEmail = async (userInfo) => {
 };
 
 const doNewTransaction = async (userInfo) => {
-  debugger
-
   const idToken = await userInfo.user.getIdToken()
   let myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");

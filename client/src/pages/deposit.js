@@ -26,7 +26,6 @@ export const Deposit = () => {
   const handleSubmit = (data) => {
     apiService.doNewTransaction({ user: currentUser, amount : Number(data.Amount)})
       .then( (result) => {
-        debugger
         setBalance(Number(result.balance))
         setShow(false);
         addToast({ text: "Deposit successfully done", type: "success" });
