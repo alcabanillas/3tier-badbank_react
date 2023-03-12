@@ -49,7 +49,6 @@ router.post("/", function (req, res) {
   authService
     .createUser( { password: req.body.password, email: req.body.email, name: req.body.name })
     .then( (info) => {
-      console.log(info.email, info.displayName)
       dal.create(info.email, info.displayName)
         .then( user => res.status(201).send(user))
         .catch( (err) => res.status(500).send(err))
@@ -58,6 +57,16 @@ router.post("/", function (req, res) {
     .catch((err) => res.status(500).send(err));
 });
 
+//filter requests with e-mail.
+router.use("/:email/", authService.verifyToken, async function (req, res, next) {
+  let user = await dal.getUserAccount(req.params.email);
+  if (user == null) {
+    res.status(404).send("User not found");
+    return;
+  }
+  res.locals.user = user;
+  next();
+});
 
 // get current balance
 /**
@@ -78,8 +87,7 @@ router.post("/", function (req, res) {
  *          schema:
  *            $ref: '#/definitions/UserBalance'
  */
-router.get("/:email/balance/", authService.verifyToken ,function (req, res) {
-  console.log(req.params.email)
+router.get("/:email/balance/", authService.verifyToken, function (req, res) {
   dal
     .getBalance(req.params.email)
     .then((data) => {

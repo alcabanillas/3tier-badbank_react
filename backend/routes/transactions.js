@@ -1,18 +1,18 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-var authService = require("../services/authService")
+var authService = require("../services/authService");
 var dal = require("../services/dal");
 
-router.use("/:email/", async function(req, res, next) {
+router.use("/:email/", authService.verifyToken, async function (req, res, next) {
   let user = await dal.getUserAccount(req.params.email);
   if (user == null) {
-    res.status(404).send("User not found")
-    return
+    res.status(404).send("User not found");
+    return;
   }
-  res.locals.user = user
-  next()
-})
+  res.locals.user = user;
+  next();
+});
 
 /**
  * @swagger
@@ -27,8 +27,6 @@ router.use("/:email/", async function(req, res, next) {
  *      items:
  *        type: object
  *        properties:
- *          account:
- *            type: string
  *          amount:
  *            type: number
  *          date:
@@ -41,7 +39,7 @@ router.use("/:email/", async function(req, res, next) {
  *  /transactions/{email}:
  *    post:
  *      summary: Create a new transaction
- *      tags: 
+ *      tags:
  *        - transactions
  *      description: Create a new transactions for the user
  *      parameters:
@@ -57,15 +55,20 @@ router.use("/:email/", async function(req, res, next) {
  *        201:
  *          description: Created!
  */
-router.post("/:email/", function (req, res) {
-  dal.doNewTransaction( res.locals.user, Number(req.body.amount))
-    .then( (data) => {
-      res.send({balance: data})
+router.post("/:email/", authService.verifyToken, function (req, res) {
+  if (isNaN(req.body.amount)) {
+    res.status(400).send('Bad request')
+    return
+  }
+
+  dal
+    .doNewTransaction(res.locals.user, Number(req.body.amount))
+    .then((data) => {
+      res.send({ balance: data });
     })
     .catch((err) => {
-      console.log(err)
-      res.status(500).send(err)
-    })
+      res.status(500).send(err);
+    });
 });
 
 /**
@@ -73,7 +76,7 @@ router.post("/:email/", function (req, res) {
  *  /transactions/{email}:
  *    get:
  *      summary: Get all transactions
- *      tags: 
+ *      tags:
  *        - transactions
  *      description: Get all transactions from the user
  *      parameters:
@@ -86,16 +89,15 @@ router.post("/:email/", function (req, res) {
  *          schema:
  *            $ref: '#/definitions/ArrayOfTransactions'
  */
-router.get("/:email/", function (req, res) {
-  dal.getTransactionsByUser(res.locals.user)
-    .then( (data) => {
-      console.log(data)
-      res.send(data)
+router.get("/:email/", authService.verifyToken, function (req, res) {
+  dal
+    .getTransactionsByUser(res.locals.user)
+    .then((data) => {
+      res.send(data);
     })
     .catch((err) => {
-      console.log(err)
       res.status(500).send(err);
-    })
-})
+    });
+});
 
 module.exports = router;

@@ -57,11 +57,13 @@ function getBalance(user) {
 
 async function getTransactionsByUser(user) {
   try {
-    console.log(user.email)
-    let data = await db.collection("transactions").find({ account: user.email }).toArray()
-    return data; 
-  }
-  catch( err) {
+    let data = await db
+      .collection("transactions")
+      .find({ account: user.email })
+      .project({ account: 0, _id: 0 })
+      .toArray();
+    return data;
+  } catch (err) {
     throw err;
   }
 }
@@ -74,28 +76,35 @@ function isConnected() {
   });
 }
 
-async function getUserAccount(account){
+async function getUserAccount(account) {
   try {
-    let user = await db.collection("users").findOne({email: account})
+    let user = await db.collection("users").findOne({ email: account });
     return user;
-  } catch( err ){
-    return null
+  } catch (err) {
+    return null;
   }
 }
 
 async function doNewTransaction(user, amount) {
   try {
-    const doc = { account : user.email, date: Date.now(), amount };
-    
-    await db.collection("transactions").insertOne(doc, { w : 1})
+    const doc = { account: user.email, date: Date.now(), amount };
+
+    await db.collection("transactions").insertOne(doc, { w: 1 });
     user.balance += amount;
-    console.log(user)
-    await db.collection("users").updateOne({email : user.email}, { $set: { balance: user.balance } } )
+    await db
+      .collection("users")
+      .updateOne({ email: user.email }, { $set: { balance: user.balance } });
     return user.balance;
   } catch (err) {
     throw err;
   }
-  
 }
 
-module.exports = { createUser, isConnected, getBalance, getTransactionsByUser, doNewTransaction, getUserAccount };
+module.exports = {
+  createUser,
+  isConnected,
+  getBalance,
+  getTransactionsByUser,
+  doNewTransaction,
+  getUserAccount,
+};

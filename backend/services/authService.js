@@ -21,7 +21,6 @@ const loginApp = admin.initializeApp({
 });
 
 function createUser(userInfo) {
-  console.log(userInfo);
   const auth = getAuth();
   return new Promise((resolve, reject) => {
     auth
