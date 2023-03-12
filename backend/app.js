@@ -1,6 +1,28 @@
 const express = require("express");
 const app = express(); // create express app
 
+const swaggerJsDoc = require("swagger-jsdoc")
+const swaggerUI = require("swagger-ui-express")
+
+const swaggerOptions = {
+  swaggerDefinition : {
+    info : {
+      version: "1.0.0",
+      title: "Bad Bank API",
+      description: "API for Full Stack Bad Bank project",
+      contact: {
+        name: "Alvaro Cabanillas",
+      }
+    }
+  },
+  basePath: "/",
+  apis: ["./routes/users.js", "./routes/transactions.js"]
+  
+}
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions)
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs))
+
 // add cors support
 const cors = require("cors");
 
