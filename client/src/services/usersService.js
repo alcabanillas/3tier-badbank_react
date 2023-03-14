@@ -134,4 +134,4 @@ const getUserBalance = async ( userInfo) => {
   )
 }
 
-module.exports = { getTransactionsByEmail, addUser, doNewTransaction, getUserBalance, isEmailAvailable };
+export default { getTransactionsByEmail, addUser, doNewTransaction, getUserBalance, isEmailAvailable };
