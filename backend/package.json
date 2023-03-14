@@ -4,8 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "dev": "echo \"This command has been deprecated. Use 'npm start'\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
     "lint": "eslint ."
   },
   "keywords": [],
