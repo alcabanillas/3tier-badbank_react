@@ -7,7 +7,8 @@ const addUser = (userInfo) => {
   var raw = JSON.stringify({
     "name": userInfo.name,
     "email": userInfo.email,
-    "password": userInfo.password
+    "password": userInfo.password,
+    "provider": userInfo.provider
   });
 
   var requestOptions = {

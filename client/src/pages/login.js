@@ -31,12 +31,17 @@ export function Login() {
       .then(async (msg) => {
         let isNewUser = apiService.isEmailAvailable(msg.user.email);
         if (isNewUser == true) {
-          apiService.addUser({
-            name: msg.user.displayName,
-            email: msg.user.email,
-            password: "",
-            provider: "google",
-          });
+          try {
+            await apiService.addUser({
+              name: msg.user.displayName,
+              email: msg.user.email,
+              password: "",
+              provider: "google",
+            });
+          } catch (err) {
+            addToast({ text: "Error: " + errorMessage, type: "error" });
+            return;
+          }
         }
         addToast({ text: `User ${msg.user.email} logged in`, type: "success" });
       })
