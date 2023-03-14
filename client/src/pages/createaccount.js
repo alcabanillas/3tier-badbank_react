@@ -10,37 +10,44 @@ export function CreateAccount() {
   const addToast = useToastContext();
 
   const handleCreate = (data) => {
-    let user = apiService
+    apiService
       .isEmailAvailable(data.Email)
-      .then(() => {
-        let result;
+      .then((res) => {
+        //If user available, create a new one
+        if (res == true) {
+          let result;
 
-        apiService
-          .addUser({
-            name: data.Name,
-            email: data.Email,
-            password: data.Password,
-            provider: 'email'
-          })
-          .then((res) => {
-            result = true;
-            setShow(false);
-            addToast({ text: "Account successfully created", type: "success" });
-            return { result };
-          })
-          .catch((error) => {
-            error.then((msg) =>
-              addToast({ text: `Error creating user: ${msg}`, type: "error" })
-            );
-            result = false;
-            return { result };
-          });
+          apiService
+            .addUser({
+              name: data.Name,
+              email: data.Email,
+              password: data.Password,
+              provider: "email",
+            })
+            .then((res) => {
+              result = true;
+              setShow(false);
+              addToast({
+                text: "Account successfully created",
+                type: "success",
+              });
+              return { result };
+            })
+            .catch((error) => {
+              error.then((msg) =>
+                addToast({ text: `Error creating user: ${msg}`, type: "error" })
+              );
+              result = false;
+              return { result };
+            });
+        } else {
+          //If user already exists, show error
+          addToast({ text: `User already exists`, type: "error" });
+        }
       })
       .catch((err) => {
-        addToast({ text: `User already exists`, type: "error" });
+        addToast({ text: err, type: "error" });
       });
-
-    console.log(user);
   };
 
   let formFields = [

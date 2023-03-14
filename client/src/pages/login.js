@@ -29,21 +29,29 @@ export function Login() {
   function handleGoogleLogin() {
     doGoogleLogin()
       .then(async (msg) => {
-        let isNewUser = apiService.isEmailAvailable(msg.user.email);
-        if (isNewUser == true) {
-          try {
-            await apiService.addUser({
-              name: msg.user.displayName,
-              email: msg.user.email,
-              password: "",
-              provider: "google",
-            });
-          } catch (err) {
-            addToast({ text: "Error: " + errorMessage, type: "error" });
-            return;
+        try {
+          let isNewUser = await apiService.isEmailAvailable(msg.user.email);
+          if (isNewUser == true) {
+            try {
+              await apiService.addUser({
+                name: msg.user.displayName,
+                email: msg.user.email,
+                password: "",
+                provider: "google",
+              });
+            } catch (err) {
+              addToast({ text: "Error: " + err, type: "error" });
+              return;
+            }
           }
+          addToast({
+            text: `User ${msg.user.email} logged in`,
+            type: "success",
+          });
+        } catch (error) {
+          addToast({ text: "Error: " + error, type: "error" });
+          return;
         }
-        addToast({ text: `User ${msg.user.email} logged in`, type: "success" });
       })
       .catch((errorMessage) => {
         addToast({ text: "Error: " + errorMessage, type: "error" });

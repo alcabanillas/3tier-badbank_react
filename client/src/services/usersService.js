@@ -17,7 +17,7 @@ const addUser = (userInfo) => {
     body: raw,
     redirect: 'follow'
   };
-
+  
   return new Promise((resolve, reject) =>
     fetch(`${API_URL}/users/`, requestOptions)
       .then((response) => {
@@ -47,7 +47,7 @@ const isEmailAvailable = (email) => {
     fetch(`${API_URL}/users/${email}/`, requestOptions)
       .then((response) => {
         if (response.status == 200) {
-          reject('User already exists');
+          resolve(false);
         } else {
           resolve(true);
         }

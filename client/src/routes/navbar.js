@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../state/AppState";
-import { Navigate, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { CustomTooltip } from "../components/customtooltip";
 import { doLogout } from "../services/authService";
 
