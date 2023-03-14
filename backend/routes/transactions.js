@@ -4,14 +4,20 @@ var router = express.Router();
 var authService = require("../services/authService");
 var dal = require("../services/dal");
 
-router.use("/:email/", authService.verifyToken, async function (req, res, next) {
-  let user = await dal.getUserAccount(req.params.email);
-  if (user == null) {
-    res.status(404).send("User not found");
-    return;
+router.use( "/:email/", authService.verifyToken, async function (req, res, next) {
+  try {
+    let user = await dal.getUserAccount(req.params.email);
+    
+    if (user == null) {
+      res.status(404).send("User not found");
+      return;
+    }
+    
+    res.locals.user = user;
+    next();
+  } catch (err) {
+      res.status(500).send("DB Error");
   }
-  res.locals.user = user;
-  next();
 });
 
 /**
@@ -57,8 +63,8 @@ router.use("/:email/", authService.verifyToken, async function (req, res, next) 
  */
 router.post("/:email/", authService.verifyToken, function (req, res) {
   if (isNaN(req.body.amount)) {
-    res.status(400).send('Bad request')
-    return
+    res.status(400).send("Bad request");
+    return;
   }
 
   dal

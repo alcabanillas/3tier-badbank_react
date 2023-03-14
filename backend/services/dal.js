@@ -7,7 +7,7 @@ const client = new MongoClient(url, { useUnifiedTopology: true });
 client
   .connect()
   .then(() => {
-    console.log("Connected successfully to server");
+    console.log("Connected successfully to DB");
   })
   .catch(() => {
     // Database Name
@@ -19,40 +19,22 @@ const dbName = "badbank";
 let db = client.db(dbName);
 
 // create user account
-function createUser(email, name) {
-  return new Promise((resolve, reject) => {
-    const collection = db.collection("users");
+async function createDBUser(email, name) {
+  let user = await db.collection("users").findOne({ email: email });
 
-    db.collection("users")
-      .findOne({ email: email })
-      .then((res) => {
-        if (res !== null) {
-          reject("User already exists");
-          return;
-        }
-        const doc = { email, name, balance: 0 };
-        collection
-          .insertOne(doc, { w: 1 })
-          .then(resolve(doc))
-          .catch((err) => reject(err));
-      })
-      .catch((err) => reject(err));
-  });
+  if (user != null) {
+    return null;
+  } else {
+    const doc = { email, name, balance: 0 };
+    return db.collection("users")
+      .insertOne(doc, { w: 1 })
+      .then(() => {return doc})
+  }
 }
 
-function getBalance(user) {
-  return new Promise((resolve, reject) => {
-    db.collection("users")
-      .findOne({ email: user })
-      .then((res) => {
-        if (res != null) {
-          resolve(res.balance);
-          return;
-        } else {
-          reject("User not found");
-        }
-      });
-  });
+async function getBalance(account) {
+  let user = await db.collection("users").findOne({ email: account });
+  return user ? user.balance : null;
 }
 
 async function getTransactionsByUser(user) {
@@ -77,12 +59,8 @@ function isConnected() {
 }
 
 async function getUserAccount(account) {
-  try {
-    let user = await db.collection("users").findOne({ email: account });
-    return user;
-  } catch (err) {
-    return null;
-  }
+  let user = await db.collection("users").findOne({ email: account });
+  return user;
 }
 
 async function doNewTransaction(user, amount) {
@@ -101,7 +79,7 @@ async function doNewTransaction(user, amount) {
 }
 
 module.exports = {
-  createUser,
+  createDBUser,
   isConnected,
   getBalance,
   getTransactionsByUser,
