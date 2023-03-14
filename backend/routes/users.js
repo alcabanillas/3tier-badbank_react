@@ -84,6 +84,10 @@ router.use(
   "/:email/",
   authService.verifyToken,
   async function (req, res, next) {
+    if (req.method == 'POST') {
+      return next()
+    }
+
     try {
       let user = await dal.getUserAccount(req.params.email);
 
@@ -159,8 +163,7 @@ router.get(
   async function (req, res) {
     try {
       let balance = await dal.getBalance(req.params.email);
-      console.log('balance: ')
-      console.log(balance)
+
       balance >= 0 ? res.send({ balance }) : res.status(404).send();
     } catch (err) {
       res.status(500).send("DB Error");
