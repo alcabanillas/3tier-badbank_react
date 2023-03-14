@@ -3,34 +3,44 @@ import { useToastContext } from "../state/CustomToast";
 import BankForm from "../components/bankform";
 import { BankCard } from "../components/bankcard";
 import * as yup from "yup";
-import apiService from "../services/usersService"
-
+import apiService from "../services/usersService";
 
 export function CreateAccount() {
   const [show, setShow] = useState(true);
   const addToast = useToastContext();
 
   const handleCreate = (data) => {
-    let result;
+    let user = apiService
+      .isEmailAvailable(data.Email)
+      .then(() => {
+        let result;
 
-    apiService.addUser({
-      name: data.Name,
-      email: data.Email,
-      password: data.Password
-    })
-      .then((res) => {
-        result = true;
-        setShow(false);
-        addToast({ text: "Account successfully created", type: "success" });
-        return { result };
+        apiService
+          .addUser({
+            name: data.Name,
+            email: data.Email,
+            password: data.Password,
+            provider: 'email'
+          })
+          .then((res) => {
+            result = true;
+            setShow(false);
+            addToast({ text: "Account successfully created", type: "success" });
+            return { result };
+          })
+          .catch((error) => {
+            error.then((msg) =>
+              addToast({ text: `Error creating user: ${msg}`, type: "error" })
+            );
+            result = false;
+            return { result };
+          });
       })
-      .catch((error) => {
-        error.then((msg) =>
-          addToast({ text: `Error creating user: ${msg}`, type: "error" })
-        );
-        result = false;
-        return { result };
+      .catch((err) => {
+        addToast({ text: `User already exists`, type: "error" });
       });
+
+    console.log(user);
   };
 
   let formFields = [
@@ -54,7 +64,7 @@ export function CreateAccount() {
       .required(),
   });
 
- /*const schema = yup.object().shape({
+  /*const schema = yup.object().shape({
   Name: yup.string().required(),
   Email: yup.string().email("User must be a valid email").required(),
   Password: yup.string().when('Email', {

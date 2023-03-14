@@ -32,6 +32,31 @@ const addUser = (userInfo) => {
   );
 };
 
+const isEmailAvailable = (email) => {
+  let myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+
+  return new Promise((resolve, reject) =>
+    fetch(`${API_URL}/users/${email}/`, requestOptions)
+      .then((response) => {
+        if (response.status == 200) {
+          reject('User already exists');
+        } else {
+          resolve(true);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      })
+  );
+};
+
 const getTransactionsByEmail = async (userInfo) => {
   const idToken = await userInfo.getIdToken()
   var options = {
@@ -108,4 +133,4 @@ const getUserBalance = async ( userInfo) => {
   )
 }
 
-module.exports = { getTransactionsByEmail, addUser, doNewTransaction, getUserBalance };
+module.exports = { getTransactionsByEmail, addUser, doNewTransaction, getUserBalance, isEmailAvailable };
