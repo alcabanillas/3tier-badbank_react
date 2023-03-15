@@ -5,6 +5,7 @@ var authService = require("../services/authService");
 var dal = require("../services/dal");
 
 router.use( "/:email/", authService.verifyToken, async function (req, res, next) {
+  console.time('middleware')
   try {
     let user = await dal.getUserAccount(req.params.email);
     
@@ -18,6 +19,7 @@ router.use( "/:email/", authService.verifyToken, async function (req, res, next)
   } catch (err) {
       res.status(500).send("DB Error");
   }
+  console.timeEnd('middleware')
 });
 
 /**
@@ -96,6 +98,8 @@ router.post("/:email/", authService.verifyToken, function (req, res) {
  *            $ref: '#/definitions/ArrayOfTransactions'
  */
 router.get("/:email/", authService.verifyToken, function (req, res) {
+  console.time("getTransactions");
+
   dal
     .getTransactionsByUser(res.locals.user)
     .then((data) => {
@@ -104,6 +108,7 @@ router.get("/:email/", authService.verifyToken, function (req, res) {
     .catch((err) => {
       res.status(500).send(err);
     });
+    console.timeEnd("getTransactions");
 });
 
 module.exports = router;
