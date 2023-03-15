@@ -81,8 +81,7 @@ router.post("/", async function (req, res) {
 
 //filter requests with e-mail.
 router.use(
-  "/:email/",
-  authService.verifyToken,
+  "/:email/",  
   async function (req, res, next) {
     if (req.method == 'POST') {
       return next()
