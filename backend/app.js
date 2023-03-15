@@ -26,10 +26,7 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs))
 // add cors support
 const cors = require("cors");
 
-app.use(cors(
-  {
-    origin: process.env.ALLOWED_ORIGINS
-  }));
+app.use(cors());
 
 app.use(express.json())
 
