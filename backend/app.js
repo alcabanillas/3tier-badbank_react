@@ -46,4 +46,12 @@ app.use("/users", usersRouter)
 var transactionsRouter = require('./routes/transactions')
 app.use("/transactions", transactionsRouter)
 
+// Add a health check route in express
+app.get('/health', (req, res) => {
+  dal.isConnected()
+  .then(() => res.status(200).send('ok'))
+  .catch((err) => res.status(500).send(err))
+  
+})
+
 module.exports = app;
