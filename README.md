@@ -47,8 +47,6 @@
 
 Refactor del capstone entregado en el Módulo 2 del curso MERN. Es una aplicación bancaria que permite crear nuevas cuentas y realizar depósitos y retirar dinero de las cuentas existentes.
 
-![overview](https://github.com/alcabanillas/3tier-badbank_react/blob/ffb0e4ad1ad94e928dab1300e8aa6c6316f1092e/docs/images/appSchema.png)
-
 
 ## :rocket: Technologies ##
 
@@ -58,6 +56,9 @@ The following tools were used in this project:
 - [React](https://es.reactjs.org/)
 - [Express](https://expressjs.com/)
 - [Firebase](https://firebase.google.com/)
+
+<center>![overview](https://github.com/alcabanillas/3tier-badbank_react/blob/ffb0e4ad1ad94e928dab1300e8aa6c6316f1092e/docs/images/appSchema.png)
+</center>
 
 ## :white_check_mark: Requirements ##
 
