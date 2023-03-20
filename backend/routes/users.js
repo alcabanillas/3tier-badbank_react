@@ -60,11 +60,15 @@ var dal = require("../services/dal");
  */
 router.post("/", async function (req, res) {
   if (req.body.provider == "email") {
-    await authService.createUser({
-      password: req.body.password,
-      email: req.body.email,
-      name: req.body.name,
-    });
+    try{
+      await authService.createUser({
+        password: req.body.password,
+        email: req.body.email,
+        name: req.body.name,
+      });  
+    } catch (error) {
+      res.status(500).send("Error creating user")
+    }
   }
 
   try {
