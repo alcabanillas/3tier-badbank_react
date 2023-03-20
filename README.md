@@ -57,8 +57,8 @@ The following tools were used in this project:
 - [Express](https://expressjs.com/)
 - [Firebase](https://firebase.google.com/)
 
-<center>![overview](https://github.com/alcabanillas/3tier-badbank_react/blob/ffb0e4ad1ad94e928dab1300e8aa6c6316f1092e/docs/images/appSchema.png)
-</center>
+<p align=center>![overview](https://github.com/alcabanillas/3tier-badbank_react/blob/ffb0e4ad1ad94e928dab1300e8aa6c6316f1092e/docs/images/appSchema.png)
+</p>
 
 ## :white_check_mark: Requirements ##
 
