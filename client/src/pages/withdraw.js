@@ -1,6 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { AuthContext } from "../state/AppState";
-import { useToastContext } from "../state/CustomToast";
+import { AuthContext, useToastContext } from "../state";
 import { BankCard } from "../components/bankcard";
 import BankForm from "../components/bankform";
 import * as yup from "yup";
@@ -11,36 +10,34 @@ export const WithDraw = () => {
   const [show, setShow] = useState(true);
   const addToast = useToastContext();
 
-  const [balance, setBalance] = useState(0)
+  const [balance, setBalance] = useState(0);
 
-  useEffect( () =>{
-    if (currentUser == null) return
-    
-    apiService.getUserBalance(currentUser)
-      .then( res => setBalance(Number(res.balance)))
-      .catch( err => addToast({ text : `Error getting balance: ${err}`, type: "error"}))
-  }, [currentUser])
+  useEffect(() => {
+    if (currentUser == null) return;
+
+    apiService
+      .getUserBalance(currentUser)
+      .then((res) => setBalance(Number(res.balance)))
+      .catch((err) => addToast({ text: `Error getting balance: ${err}`, type: "error" }));
+  }, [currentUser]);
 
   const handleSubmit = (data) => {
     if (Number(data.Amount) > balance) {
-      let errorMessage = 'Insufficient funds'
-      addToast({text: errorMessage, type: "error"})
-      return
+      let errorMessage = "Insufficient funds";
+      addToast({ text: errorMessage, type: "error" });
+      return;
     }
-    apiService.doNewTransaction({ user: currentUser, amount : Number(-data.Amount)})
-      .then( (result) => {
-        setBalance(Number(result.balance))
+    apiService
+      .doNewTransaction({ user: currentUser, amount: Number(-data.Amount) })
+      .then((result) => {
+        setBalance(Number(result.balance));
         setShow(false);
         addToast({ text: "Withdraw successfully done", type: "success" });
       })
-      .catch( (errorMessage) =>
-        addToast({ text: errorMessage, type: "error" })
-      )
+      .catch((errorMessage) => addToast({ text: errorMessage, type: "error" }));
   };
 
-  let formFields = [
-    { id: "Amount", placeholder: "Enter amount", type: "input" },
-  ];
+  let formFields = [{ id: "Amount", placeholder: "Enter amount", type: "input" }];
 
   let initialValues = {
     Amount: "",
@@ -49,9 +46,7 @@ export const WithDraw = () => {
   const schema = yup.object().shape({
     Amount: yup
       .number()
-      .test("is-decimal", "Amount must be a currency", (value) =>
-        value.toString().match(/^-?\d+(\.\d{1,2})?$/g)
-      )
+      .test("is-decimal", "Amount must be a currency", (value) => value.toString().match(/^-?\d+(\.\d{1,2})?$/g))
       .typeError("Amount must be a valid number")
       .min(0.01, "Amount must be a positive number")
       .required(),

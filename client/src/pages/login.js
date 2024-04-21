@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { AuthContext } from "../state/AppState";
-import { useToastContext } from "../state/CustomToast";
+import { AuthContext, useToastContext } from "../state";
+
 import BankForm from "../components/bankform";
 import { BankCard } from "../components/bankcard";
 import * as yup from "yup";
